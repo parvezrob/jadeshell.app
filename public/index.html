@@ -141,7 +141,7 @@ p{margin:0}
 .cmd code{flex:1;min-width:0;padding:14px 16px;font:400 14px/1.5 var(--mono);color:var(--ink);white-space:nowrap;overflow-x:auto;scrollbar-width:none}
 .cmd code::-webkit-scrollbar{display:none}
 @media (max-width:699px){.wide{display:none}.sub{max-width:40ch}}
-@media (max-width:520px){.cmd code{white-space:normal;overflow-wrap:anywhere;font-size:13px}}
+
 .cmd code .pr{color:var(--accent-hi);user-select:none}
 .copy{flex:none;min-width:88px;border:0;border-left:1px solid var(--row-line);background:var(--surface-2);color:var(--ink);font:500 12px/1 var(--mono);letter-spacing:.06em;cursor:pointer;padding:0 16px}
 .copy:hover{background:var(--row)}
@@ -245,6 +245,7 @@ h2{font-size:clamp(32px,4.6vw,60px);line-height:1;letter-spacing:-.04em}
 .term-body .c{color:var(--muted)}
 @media (max-width:560px){.term-body{font-size:13px;line-height:1.7}.term-body .line{white-space:normal}.term-body .c{display:block;padding-left:4ch}.term-body .line+.line{margin-top:6px}}
 .facts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 26px;max-width:800px;margin:26px auto 0;font-size:12px;color:var(--dim)}
+@media (max-width:560px){.facts{flex-direction:column;align-items:flex-start;width:max-content;max-width:100%;gap:8px}}
 .facts span::before{content:"";display:inline-block;width:5px;height:5px;margin-right:9px;border-radius:50%;background:var(--accent);vertical-align:2px}
 
 /* Install */
@@ -366,6 +367,13 @@ html.boot .topbar{animation:boot-bar .3s cubic-bezier(.2,.9,.3,1) .56s backwards
 .try-lock.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .25s}
 .try-lock.leaving{animation:try-unlock .3s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes try-unlock{from{opacity:1;visibility:visible;transform:none}to{opacity:1;visibility:visible;transform:translateY(-100%)}}
+/* Phones: the command stays one or two lines, beside a compact Copy. */
+@media (max-width:520px){
+  .cmd code,.install .cmd code{padding:12px;white-space:normal;overflow-wrap:break-word;font-size:11.5px;line-height:1.6}
+  .cmd code .pr{display:none}
+  .cmd .nw{white-space:nowrap}
+  .copy,.install .copy{min-width:0;padding:0 14px;font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -399,7 +407,7 @@ html.boot .topbar{animation:boot-bar .3s cubic-bezier(.2,.9,.3,1) .56s backwards
     <h1>The GNOME you already have, <span class="nb">redrawn<span class="dot">.</span></span></h1>
     <p class="sub">Themes, a dock and a top bar for the desktop you already run.<br class="wide"> One line to install, one to undo.</p>
     <div class="cmd">
-      <code id="cmd-hero"><span class="pr">$ </span>curl -fsSL https://jadeshell.app/install | bash</code>
+      <code id="cmd-hero"><span class="pr">$ </span>curl -fsSL <span class="nw">https://jadeshell.app/install | bash</span></code>
       <button class="copy" type="button" data-copy="cmd-hero">Copy</button>
     </div>
 
@@ -488,7 +496,7 @@ html.boot .topbar{animation:boot-bar .3s cubic-bezier(.2,.9,.3,1) .56s backwards
   <section class="sec wrap install" id="install" aria-labelledby="install-title">
     <h2 id="install-title">Your turn.</h2>
     <div class="cmd">
-      <code id="cmd-install"><span class="pr">$ </span>curl -fsSL https://jadeshell.app/install | bash</code>
+      <code id="cmd-install"><span class="pr">$ </span>curl -fsSL <span class="nw">https://jadeshell.app/install | bash</span></code>
       <button class="copy" type="button" data-copy="cmd-install">Copy</button>
     </div>
     <p class="note">Fedora 44 or Ubuntu 26.04, GNOME 50. Run it as yourself, then log out and back in. Setup names any extension it turns off; <code>jade restore</code> turns them back on.</p>
