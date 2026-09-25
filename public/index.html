@@ -426,7 +426,7 @@ html.boot .dock{animation:boot-dock .46s cubic-bezier(.3,.7,.3,1) .62s backwards
       <div>
         <p class="lede"><b>22 themes</b> that re-color everything, a <b>magnifying dock</b> and a <b>redrawn top bar</b>, on the stock GNOME you already run. One install, everything undoable. No new OS, no tiling window manager to learn.</p>
         <div class="cmd">
-          <code id="cmd-hero"><span class="pr">$ </span>curl -fsSL https://raw.githubusercontent.com/parvezrob/jade-shell/main/install.sh | bash</code>
+          <code id="cmd-hero"><span class="pr">$ </span>curl -fsSL https://jadeshell.app/install | bash</code>
           <button class="copy" id="copy-hero" type="button" data-copy="cmd-hero">Copy</button>
         </div>
         <div class="links small">
@@ -679,10 +679,11 @@ html.boot .dock{animation:boot-dock .46s cubic-bezier(.3,.7,.3,1) .62s backwards
         <div class="term-bar"><span></span><span>kitty — ~</span><span class="x"><span class="ic" data-i="window-close"></span></span></div>
         <div class="term-body">
           <div class="install-cmd">
-            <code id="cmd-install"><span class="p">~ › </span>curl -fsSL https://raw.githubusercontent.com/parvezrob/jade-shell/main/install.sh | bash</code>
+            <code id="cmd-install"><span class="p">~ › </span>curl -fsSL https://jadeshell.app/install | bash</code>
             <button class="copy-lg" id="copy-install" type="button" data-copy="cmd-install">Copy</button>
           </div>
-          <span class="line c" style="margin-top:10px"># then log out and back in once. The Welcome page opens:</span>
+          <span class="line c" style="margin-top:10px"># jadeshell.app/install is <a href="https://github.com/parvezrob/jade-shell/blob/main/install.sh" target="_blank" rel="noopener">install.sh on GitHub</a>: read it first if you like.</span>
+          <span class="line c"># then log out and back in once. The Welcome page opens:</span>
           <span class="line c"># pick a theme, glass, icons, the keymap and your weather city.</span>
           <span class="line" style="margin-top:10px"><span class="k">OS</span>: <span class="y">Fedora Linux 44</span> or <span class="y">Ubuntu 26.04</span></span>
           <span class="line"><span class="k">Desktop</span>: <span class="y">GNOME 50</span></span>
@@ -1006,7 +1007,7 @@ if (document.readyState === "complete") preloadNext(2);
 else window.addEventListener("load", () => preloadNext(2), { once: true });
 
 /* ---------------- Copy buttons ---------------- */
-const CMD = "curl -fsSL https://raw.githubusercontent.com/parvezrob/jade-shell/main/install.sh | bash";
+const CMD = "curl -fsSL https://jadeshell.app/install | bash";
 document.querySelectorAll("[data-copy]").forEach(btn => {
   const label = btn.textContent;
   btn.addEventListener("click", () => {
