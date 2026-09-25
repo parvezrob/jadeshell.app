@@ -3,8 +3,9 @@
 The website of [Jade Shell](https://github.com/parvezrob/jade-shell): <https://jadeshell.app>.
 
 A single static page (`public/index.html`) with a live Jade Shell desktop, screenshots, a demo video and fonts. No build
-step, no trackers, nothing loaded from other sites. It is served by Cloudflare (Workers static
-assets), configured in `wrangler.jsonc`.
+step, no cookies; the page itself loads nothing from other sites. It is served by Cloudflare (Workers
+static assets), configured in `wrangler.jsonc`, which adds its cookieless Web Analytics script to
+count visits.
 
 ## Preview and deploy
 
