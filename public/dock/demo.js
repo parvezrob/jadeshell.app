@@ -1363,7 +1363,6 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
         say('');
     };
     if (!arrive || reduce.matches || !('IntersectionObserver' in window)) {
-        warm();
         settle();
         return;
     }
@@ -1381,7 +1380,6 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
         clearTimeout(lingering);
         sentinel.remove();
         stage.classList.replace('dock-away', 'dock-rise');
-        warm();
         let done = false;
         const up = () => {
             if (done)
