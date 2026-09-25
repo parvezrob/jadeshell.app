@@ -146,8 +146,13 @@ p{margin:0}
 .copy{flex:none;min-width:88px;border:0;border-left:1px solid var(--row-line);background:var(--surface-2);color:var(--ink);font:500 12px/1 var(--mono);letter-spacing:.06em;cursor:pointer;padding:0 16px}
 .copy:hover{background:var(--row)}
 .copy.done{color:#0b1411;background:var(--accent)}
-.live-tag{display:flex;align-items:center;justify-content:center;gap:10px;margin:clamp(40px,5vw,56px) 0 16px;font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
-.live-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(45,213,183,.16);animation:pulse 2.4s ease-in-out infinite}
+.live-tag{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:6px 14px;margin:clamp(40px,5vw,56px) auto 18px;max-width:40ch;font:500 clamp(16px,1.6vw,19px)/1.4 var(--sans);letter-spacing:-.01em;color:var(--ink)}
+.live-tag .live-line{text-wrap:balance}
+.live-dot{display:inline-flex;align-items:center;gap:8px;font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal);white-space:nowrap}
+.on-touch{display:none}
+@media (hover:none){.on-hover{display:none}.on-touch{display:inline}}
+@media (min-width:700px){.live-tag{max-width:none}}
+.live-dot::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(45,213,183,.16);animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 7px rgba(45,213,183,0)}}
 
 /* ---------- The live desktop ---------- */
@@ -438,7 +443,7 @@ html.boot .topbar{animation:boot-bar .3s cubic-bezier(.2,.9,.3,1) .56s backwards
       <button class="copy" type="button" data-copy="cmd-hero">Copy</button>
     </div>
 
-    <div class="live-tag" id="try">Live in your browser · click anything</div>
+    <p class="live-tag" id="try"><span class="live-dot">Live</span><span class="live-line">A dock that feels like the Mac’s. Don’t take our word for it: <span class="on-hover">hover it.</span><span class="on-touch">try it.</span></span></p>
     <div class="try" id="try-stage" role="group" aria-label="A live Jade Shell desktop">
       <img class="try-poster" src="/dock/themes/osaka-jade/desk-960.webp" srcset="/dock/themes/osaka-jade/desk-960.webp 960w, /dock/themes/osaka-jade/desk-1800.webp 1800w" sizes="(min-width: 1240px) 1176px, (min-width: 672px) calc(100vw - 64px), calc(100vw - 32px)" width="1400" height="900" alt="" fetchpriority="high" decoding="async">
     </div>
@@ -575,7 +580,7 @@ html.boot .topbar{animation:boot-bar .3s cubic-bezier(.2,.9,.3,1) .56s backwards
 <footer class="wrap">
   <div class="foot">
     <div class="brand"><span class="ic" data-i="jade-shell"></span>Jade Shell</div>
-    <p>Themes, templates and usage collectors come from <a href="https://omarchy.org" target="_blank" rel="noopener">Omarchy</a> by DHH / Basecamp (MIT). Jade Shell is an independent project, not affiliated with Omarchy, Basecamp or GNOME. GPL-3.0-or-later.</p>
+    <p>Themes, templates and usage collectors come from <a href="https://omarchy.org" target="_blank" rel="noopener">Omarchy</a> by DHH / Basecamp (MIT). Jade Shell is an independent project, not affiliated with Omarchy, Basecamp, GNOME or Apple; Mac is a trademark of Apple Inc. GPL-3.0-or-later.</p>
     <a href="https://github.com/parvezrob/jade-shell" target="_blank" rel="noopener">Source on GitHub</a>
   </div>
 </footer>
