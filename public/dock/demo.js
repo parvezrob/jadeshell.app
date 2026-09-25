@@ -442,13 +442,20 @@ export async function start(root, {meter, hint, chips, arrive = false} = {}) {
         menuHits.replaceChildren();
         if (role === 'jade-picker') {
             for (const [id, [x, y, w, h]] of Object.entries(desk.tiles)) {
-                if (!desk.themes[id])
-                    continue;  // Lumon stays in the picker, not on this page
-                const b = el('button', 'try-tile', {type: 'button', 'aria-label': `Switch to ${desk.themes[id].name}`});
+                // Lumon stays in the picker, not on this page: its tile says so.
+                const here = Boolean(desk.themes[id]);
+                const b = el('button', 'try-tile', {type: 'button',
+                    'aria-label': here ? `Switch to ${desk.themes[id].name}` : 'A theme on the real desktop only'});
                 b.style.transform = `translate3d(${x + dx}px,${y}px,0)`;
                 b.style.width = `${w}px`;
                 b.style.height = `${h}px`;
-                b.addEventListener('click', e => { e.stopPropagation(); switchTheme(id); });
+                b.addEventListener('click', e => {
+                    e.stopPropagation();
+                    if (here)
+                        switchTheme(id);
+                    else
+                        say('That one is on the real desktop only.');
+                });
                 menuHits.append(b);
             }
         }
@@ -1348,8 +1355,9 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
     root.addEventListener('touchstart', warm, {once: true, passive: true});
 
     // ---------- arrival ----------
-    // The first time the desktop's bottom edge is in view, the dock rises and
-    // Files launches from it. Without motion (or asked not to), Files is open.
+    // The first time the desktop's bottom edge is in view (or most of the
+    // desktop has been, for a moment), the dock rises and Files launches from
+    // it. Without motion (or asked not to), Files is open.
     const settle = () => {
         open(wins.files, {launch: false});
         say('');
@@ -1369,6 +1377,8 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
             return;
         risen = true;
         io.disconnect();
+        most.disconnect();
+        clearTimeout(lingering);
         sentinel.remove();
         stage.classList.replace('dock-away', 'dock-rise');
         warm();
@@ -1390,9 +1400,16 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
     // After the page's boot intro, and only while the tab is visible.
     const ready = () => !document.documentElement.classList.contains('boot') && document.visibilityState === 'visible';
     const whenReady = () => (ready() ? setTimeout(rise, 180) : setTimeout(whenReady, 150));
-    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) whenReady(); },
-        {rootMargin: '0px 0px -24px 0px', threshold: 1});
+    const io = new IntersectionObserver(es => { if (es.some(e => e.intersectionRatio >= 0.6)) whenReady(); },
+        {rootMargin: '0px 0px -24px 0px', threshold: 0.6});
     io.observe(sentinel);
+    let lingering = 0;
+    const most = new IntersectionObserver(es => {
+        clearTimeout(lingering);
+        if (es.some(e => e.intersectionRatio >= 0.6))
+            lingering = setTimeout(whenReady, 1400);
+    }, {threshold: 0.6});
+    most.observe(root);
     root.addEventListener('pointerdown', rise, {once: true});
     root.addEventListener('keydown', rise, {once: true});
 }
