@@ -1,0 +1,13 @@
+{
+  // jadeshell.app: static files only, served by Cloudflare (Workers static assets).
+  "name": "jadeshell-app",
+  "compatibility_date": "2026-09-25",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "jadeshell.app", "custom_domain": true },
+    { "pattern": "www.jadeshell.app", "custom_domain": true }
+  ]
+}
