@@ -2,7 +2,7 @@
 
 The website of [Jade Shell](https://github.com/parvezrob/jade-shell): <https://jadeshell.app>.
 
-A single static page (`public/index.html`) with its screenshots, demo video and fonts. No build
+A single static page (`public/index.html`) with a live Jade Shell desktop, screenshots, a demo video and fonts. No build
 step, no trackers, nothing loaded from other sites. It is served by Cloudflare (Workers static
 assets), configured in `wrangler.jsonc`.
 
@@ -15,8 +15,11 @@ npx wrangler deploy                               # publish (needs `npx wrangler
 
 ## What's in `public/`
 
-- `index.html`: the page. The theme slider shows 21 themes on 8 screens (`shots/<theme>-<screen>.webp`,
-  1800 px, with 480 px copies in `shots/thumb/`).
+- `index.html`: the page. It opens on a live desktop and shows every theme's desktop in two reels
+  (`shots/thumb/<theme>-desktop.webp`, 480 px, and `shots/mid/`, 960 px).
+- `dock/demo.js`: the live desktop. Its dock is Jade Shell's own magnification, bounce and genie code
+  ported to the web; the rest is the real Shell captured in each theme (`dock/themes/<theme>/`,
+  laid out by `dock/desk.json`).
 - `video/demo.mp4`: a screen recording of the Shell, with `demo-poster.webp`.
 - `fonts/`: Geist and JetBrains Mono (latin, variable), both under the SIL Open Font License.
 - `og.png`: the picture link previews show. `_headers`: caching and security headers.

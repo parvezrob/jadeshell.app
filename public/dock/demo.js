@@ -66,7 +66,7 @@ const el = (tag, cls, attrs = {}) => {
     return node;
 };
 
-export async function start(root, {meter, hint, chips} = {}) {
+export async function start(root, {meter, hint, chips, arrive = false} = {}) {
     const desk = await (await fetch('/dock/desk.json')).json();
     const THEMES = Object.keys(desk.themes);
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -99,7 +99,7 @@ export async function start(root, {meter, hint, chips} = {}) {
 
     let W = 1400, scale = 1, dx = 0;  // dx: where the 1400-wide desktop starts (phones show its middle)
     let m;  // the dock's metrics
-    const dense = () => root.clientWidth * (window.devicePixelRatio || 1) > 1100;
+    const dense = () => root.clientWidth * (window.devicePixelRatio || 1) > 960;  // the page's poster picks the same way
 
     // ---------- the dock's items ----------
     const items = APPS.map(app => {
@@ -117,7 +117,7 @@ export async function start(root, {meter, hint, chips} = {}) {
         return item;
     });
     const itemFor = id => items.find(i => i.id === id);
-    let dockShown = true;
+    let dockShown = true, away = false;  // away: below the screen, waiting to rise
 
     const fitted = () => {
         const n = items.filter(i => !i.separator).length;
@@ -161,7 +161,7 @@ export async function start(root, {meter, hint, chips} = {}) {
         const b = BUTTONS[id];
         const app = APPS.find(a => a.window === id);
         const node = el('div', 'try-win hidden', {'data-win': id});
-        const img = el('img', '', {src: asset(`win-${id}.webp`), alt: `The ${app.name} window`, draggable: 'false',
+        const img = el('img', '', {alt: `The ${app.name} window`, draggable: 'false',  // its src: when it opens
             width: String(w), height: String(h)});
         const minBtn = el('button', 'try-winbtn', {type: 'button', 'aria-label': `Minimize ${b.title}`});
         const closeBtn = el('button', 'try-winbtn', {type: 'button', 'aria-label': `Close ${b.title}`});
@@ -309,7 +309,8 @@ export async function start(root, {meter, hint, chips} = {}) {
         paintColors();
         itemFor('files').img.src = asset('files.webp');
         for (const win of Object.values(wins))
-            win.img.src = asset(`win-${win.id}.webp`);
+            if (win.state !== 'closed')
+                win.img.src = asset(`win-${win.id}.webp`);
         if (openMenu)
             showMenu(openMenu);
         renderWorkspaces();
@@ -317,7 +318,7 @@ export async function start(root, {meter, hint, chips} = {}) {
         if (overlayKind === 'grid')
             showAppGrid();
         if (!quiet)
-            say(`${T().name}: the whole desktop switched. On the real thing that takes 253 ms (p50), wallpaper included.`);
+            say(`${T().name}. The real thing switches in 253 ms.`);
         idle(warmTheme);
     }
 
@@ -391,7 +392,7 @@ export async function start(root, {meter, hint, chips} = {}) {
         spaces.classList.toggle('instant', reduce.matches);
         workspaces.forEach((space, k) => { space.style.transform = `translate3d(${(k - current) * W}px,0,0)`; });
         renderWorkspaces();
-        say(i === 0 ? '' : `Workspace ${i + 1}: open an app here, or go back with 1 (or Ctrl+Alt+←).`);
+        say(i === 0 ? '' : `Workspace ${i + 1}. Back with 1.`);
     }
 
     // ---------- the menus ----------
@@ -426,7 +427,7 @@ export async function start(root, {meter, hint, chips} = {}) {
         Object.entries(hits).forEach(([r, b]) => b.setAttribute('aria-expanded', r === role ? 'true' : 'false'));
         buildMenuHits(role, box);
         if (role === 'jade-picker')
-            say('Pick a theme: the whole desktop switches, and the picker stays open while you try them.');
+            say('Pick one. The picker stays open.');
     }
     function closeMenu() {
         if (!openMenu)
@@ -468,7 +469,7 @@ export async function start(root, {meter, hint, chips} = {}) {
         lockEl.style.backgroundImage = `url(${asset(`lock-${dense() ? 1800 : 960}.webp`)})`;
         lockEl.classList.remove('leaving');
         lockEl.classList.add('on');
-        say('Locked. Click or press a key: unlocking takes 26.6 ms (p50) on the real thing.');
+        say('Locked. Click to unlock.');
         root.focus({preventScroll: true});
     }
     function unlock() {
@@ -493,7 +494,7 @@ export async function start(root, {meter, hint, chips} = {}) {
     };
     const inside = (x, y) => {
         const rise = envelope > 0.05 || target ? m.icon * (MAX_SCALE - 1) : 0;
-        return dockShown && x >= extent[0] && x <= extent[1] && y >= m.slabTop - rise && y <= H;
+        return dockShown && !away && x >= extent[0] && x <= extent[1] && y >= m.slabTop - rise && y <= H;
     };
     function frame(now) {
         const t0 = performance.now();
@@ -796,7 +797,7 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
             win.state = 'minimized';
             win.node.classList.add('hidden');
             renderWorkspaces();
-            say(`${BUTTONS[win.id].title} minimized into ${win.app.name}. Click its icon to bring it back.`);
+            say('Click its icon to bring it back.');
         });
     }
     function unminimize(win) {
@@ -841,11 +842,14 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
             win.state = 'open';
             renderWorkspaces();
         };
-        // A launch bounces until the app's first window is up (items.js).
+        // A launch bounces until the app's first window is up (items.js); the
+        // window waits for its picture, so it never draws half-decoded.
+        const ready = preload(asset(`win-${win.id}.webp`));
+        win.img.src = asset(`win-${win.id}.webp`);
         if (launch)
-            bounce(item, 2, show);
+            bounce(item, 2, () => ready.then(show));
         else
-            show();
+            ready.then(show);
     }
     for (const win of Object.values(wins)) {
         // Drag by the header bar; any click raises.
@@ -901,13 +905,13 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
         }
         if (item.id === 'trash') {
             bounce(item, 1);
-            say('The trash is empty (it is a demo).');
+            say('The trash is empty.');
             return;
         }
         if (!item.running) {
             bounce(item, 3, () => {
                 setRunning(item, true);
-                say(`${item.name} is running (its dot). Files, Terminal, Text Editor and Calculator have windows here.`);
+                say(`${item.name} is running. Files, Terminal, Text Editor and Calculator open windows.`);
             });
         }
     }
@@ -1095,7 +1099,7 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
         } else if (item.id === 'apps') {
             add('Show Apps', () => showAppGrid());
             sep();
-            add('Dock Settings…', () => say('The dock\'s size, magnification and behavior live in the Jade Shell app.'));
+            add('Dock Settings…', () => say('Dock settings live in the Jade Shell app.'));
         } else {
             add('Open', () => activate(item));
             add('Empty Trash', null, {disabled: true});
@@ -1116,7 +1120,7 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
         return d ? `<svg viewBox="${d[0]}" aria-hidden="true">${d[1]}</svg>` : '<svg viewBox="0 0 16 16" aria-hidden="true"></svg>';
     };
     const toggles = {awake: false, night: false, dnd: false, dark: true, dock: true, frosted: false, monitor: true, usage: true, bell: true};
-    const soon = what => () => say(`${what} works on the real desktop; this page only shows the menu.`);
+    const soon = what => () => say(`${what} works on the real desktop.`);
     function tree() {
         const tg = (label, icon, key, apply) => ({label, icon, checked: () => toggles[key],
             action: () => { toggles[key] = !toggles[key]; apply?.(toggles[key]); }});
@@ -1297,16 +1301,14 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
         if (running && now - meterAt < 250)
             return;
         meterAt = now;
-        meter.textContent = running
-            ? `${Math.round(work.fps)} fps · ${work.ms.toFixed(2)} ms of work a frame`
-            : 'Still: no frames, no work until something moves';
+        meter.textContent = running ? `${Math.round(work.fps)} fps · ${work.ms.toFixed(2)} ms a frame` : '';
         meter.classList.toggle('live', running);
     }
     function say(text) {
         if (hint)
             hint.textContent = text || hint.dataset.idle;
     }
-    window.jadeDesk = {openMenu: showMenu, jadeMenu: toggleJadeMenu};  // the page's buttons
+    window.jadeDesk = {openMenu: showMenu, jadeMenu: toggleJadeMenu, theme: id => switchTheme(id)};  // the page's buttons
 
     // ---------- start ----------
     const idle = fn => (window.requestIdleCallback ? requestIdleCallback(fn, {timeout: 3000}) : setTimeout(fn, 1500));
@@ -1323,9 +1325,6 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
     paintColors();
     for (const win of Object.values(wins))
         moveTo(win, 0);
-    wins.files.state = 'open';
-    wins.files.node.classList.remove('hidden');
-    setRunning(itemFor('files'), true);
     resize();
     chipsSync();
     new ResizeObserver(resize).observe(root);
@@ -1337,5 +1336,63 @@ void main() { gl_FragColor = texture2D(tex, v) * alpha; }`));
     setTimeout(check, 1500);
     showMeter(false);
     root.classList.add('ready');
-    idle(warmTheme);
+    // The theme's menus and windows once someone is here to open them.
+    let warmed = false;
+    const warm = () => {
+        if (!warmed) {
+            warmed = true;
+            idle(warmTheme);
+        }
+    };
+    root.addEventListener('pointerenter', warm, {once: true});
+    root.addEventListener('touchstart', warm, {once: true, passive: true});
+
+    // ---------- arrival ----------
+    // The first time the desktop's bottom edge is in view, the dock rises and
+    // Files launches from it. Without motion (or asked not to), Files is open.
+    const settle = () => {
+        open(wins.files, {launch: false});
+        say('');
+    };
+    if (!arrive || reduce.matches || !('IntersectionObserver' in window)) {
+        warm();
+        settle();
+        return;
+    }
+    away = true;
+    stage.classList.add('dock-away');
+    const sentinel = el('div', 'try-sentinel', {'aria-hidden': 'true'});
+    root.append(sentinel);
+    let risen = false;
+    const rise = () => {
+        if (risen)
+            return;
+        risen = true;
+        io.disconnect();
+        sentinel.remove();
+        stage.classList.replace('dock-away', 'dock-rise');
+        warm();
+        let done = false;
+        const up = () => {
+            if (done)
+                return;
+            done = true;
+            away = false;
+            stage.classList.remove('dock-rise');
+            if (wins.files.state === 'closed') {
+                open(wins.files);
+                setTimeout(() => say('Now minimize it: the – button.'), BOUNCE_MS * 4);
+            }
+        };
+        glass.addEventListener('animationend', up, {once: true});
+        setTimeout(up, 1200);
+    };
+    // After the page's boot intro, and only while the tab is visible.
+    const ready = () => !document.documentElement.classList.contains('boot') && document.visibilityState === 'visible';
+    const whenReady = () => (ready() ? setTimeout(rise, 180) : setTimeout(whenReady, 150));
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) whenReady(); },
+        {rootMargin: '0px 0px -24px 0px', threshold: 1});
+    io.observe(sentinel);
+    root.addEventListener('pointerdown', rise, {once: true});
+    root.addEventListener('keydown', rise, {once: true});
 }
