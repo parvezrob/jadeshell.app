@@ -211,6 +211,36 @@ section{scroll-margin-top:48px}
 .vbox.playing .play{opacity:0;pointer-events:none}
 .vbox.playing:hover .play,.vbox.playing .play:focus-visible{opacity:1;pointer-events:auto}
 
+/* ---------- Try the dock (a live copy, dock/demo.js) ---------- */
+.try{position:relative;overflow:hidden;border:1px solid rgba(88,149,124,.55);border-radius:6px;background:var(--bg-1);aspect-ratio:1400/900;box-shadow:0 30px 70px -20px rgba(0,0,0,.7);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.try.ready{aspect-ratio:auto}
+.try-desk{position:absolute;left:0;top:0;height:900px;transform-origin:0 0;background-color:var(--bg-1);background-repeat:no-repeat;background-size:1400px 900px;background-position:var(--desk-x,0px) 0}
+.try-win{position:absolute;left:0;top:0;border-radius:13px;box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06)}
+.try-win.hidden{visibility:hidden}
+.try-win>img{display:block;width:100%;height:100%;border-radius:13px;pointer-events:none;-webkit-user-drag:none;transition:transform .18s cubic-bezier(.2,.9,.3,1),opacity .18s}
+.try-win.opening>img{transform:scale(.94);opacity:0;transition:none}
+.try-win.closing{box-shadow:none}
+.try-win.closing>img{transform:scale(.92);opacity:0}
+.try-winbtn{position:absolute;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer}
+.try-winbtn:hover{background:rgba(255,255,255,.07)}
+.try-winbtn:focus-visible{outline:3px solid var(--teal);outline-offset:1px}
+.try-genie{position:absolute;left:0;top:0;pointer-events:none}
+.try-glass{position:absolute;left:0;top:0;border-radius:var(--r);corner-shape:squircle;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0) 55%),rgba(17,28,24,.38);box-shadow:0 4px 22px rgba(0,0,0,.34),inset 0 0 0 1px rgba(255,255,255,.12);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8)}
+.try-icons{position:absolute;inset:0;pointer-events:none}
+.try-item{position:absolute;left:0;top:0;padding:0;border:0;background:none;pointer-events:auto;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent}
+.try-item img{position:absolute;display:block;max-width:none;transform-origin:50% 100%;will-change:transform;filter:drop-shadow(0 3px 5px rgba(0,0,0,.38));-webkit-user-drag:none;pointer-events:none}
+.try-item.pressed img{filter:brightness(.72) drop-shadow(0 3px 5px rgba(0,0,0,.38))}
+.try-item:focus-visible{outline:none}
+.try-item:focus-visible img{outline:3px solid var(--teal);outline-offset:6px;border-radius:22%}
+.try-dot{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;background:rgba(193,196,151,.9);opacity:0;transition:opacity .2s}
+.try-item.running .try-dot{opacity:1}
+.try-sep{position:absolute;left:0;top:0;background:linear-gradient(90deg,transparent calc(50% - 1px),rgba(193,196,151,.26) 0 calc(50% + 1px),transparent 0)}
+.try-label{position:absolute;left:0;top:0;padding:7px 11px;background:rgba(17,28,24,.9);color:#c1c497;border:1px solid rgba(193,196,151,.14);border-radius:8px;font:500 15px/1 var(--mono);white-space:nowrap;opacity:0;transition:opacity 80ms;pointer-events:none}
+.try-label.on{opacity:1;transition-duration:90ms}
+.try-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;margin-top:10px;font:500 11px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.try-foot .live{color:var(--ink)}
+.try-foot .live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-right:8px;vertical-align:1px}
+
 /* Speed: system monitor */
 .speed-grid{display:grid;gap:28px}
 @media (min-width:980px){.speed-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:start}}
@@ -481,6 +511,18 @@ html.boot .dock{animation:boot-dock .46s cubic-bezier(.3,.7,.3,1) .62s backwards
     </div>
   </section>
 
+  <section class="sec wrap" id="try" aria-labelledby="try-title">
+    <div class="sec-head">
+      <div>
+        <div class="lbl" style="margin-bottom:14px">Try it · the real dock, in your browser</div>
+        <h2 id="try-title">Go on, play with the dock.</h2>
+      </div>
+      <p>The same curve, spring, bounce and genie as on the desktop: Jade Shell's own dock code, ported to the web. Point at the icons, click an app, then minimize the Files window.</p>
+    </div>
+    <div class="try" id="try-stage" role="group" aria-label="A live Jade Shell desktop: the dock and a Files window"></div>
+    <div class="try-foot"><span id="try-meter">The dock loads as you get here</span><span id="try-hint" data-idle="Minimize Files with its – button · drag it by its title bar">Minimize Files with its – button · drag it by its title bar</span></div>
+  </section>
+
   <section class="sec wrap" id="demo" aria-labelledby="demo-title">
     <div class="sec-head">
       <div>
@@ -597,7 +639,7 @@ html.boot .dock{animation:boot-dock .46s cubic-bezier(.3,.7,.3,1) .62s backwards
           <img src="shots/osaka-jade-desktop.webp" width="1800" height="1157" alt="Jade Shell’s dock on frosted glass, apps past a separator on the right" loading="lazy" decoding="async">
         </div>
         <ul class="facts">
-          <li><span>Icons grow under the pointer, a label names each one, running apps get a dot. <b>The dock on this page works the same way.</b></span></li>
+          <li><span>Icons grow under the pointer, a label names each one, running apps get a dot. <b><a href="#try">Try the real thing above.</a></b></span></li>
           <li><span>Windows pour into their icon when minimized; an app bounces until its window is up.</span></li>
           <li><span>Drawn on frosted glass in the theme’s colors, moved by GPU transforms: 0.09 ms of work per frame.</span></li>
         </ul>
@@ -1062,6 +1104,18 @@ if ("IntersectionObserver" in window) {
   }, { threshold: [0, .2, .5, .8] }).observe(vbox);
 }
 
+/* ---------------- Live dock: dock/demo.js, loaded as it nears the screen ---------------- */
+const tryStage = $("#try-stage");
+if (tryStage) {
+  const loadDock = () => import("/dock/demo.js")
+    .then(mod => mod.start(tryStage, { meter: $("#try-meter"), hint: $("#try-hint") }))
+    .catch(() => { $("#try-meter").textContent = "The live dock needs a newer browser"; });
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); loadDock(); } }, { rootMargin: "700px 0px" });
+    io.observe(tryStage);
+  } else loadDock();
+}
+
 /* ---------------- Monitor rows ---------------- */
 function rows(el, list, max, ticks) {
   el.innerHTML = list.map(r => {
@@ -1106,8 +1160,8 @@ function tick() {
 tick(); setInterval(tick, 15000);
 
 /* ---------------- Scroll spy: dock dots, workspaces, bar icons ---------------- */
-const SECS = ["themes", "demo", "speed", "features", "undo", "install"].map(id => document.getElementById(id));
-const WS = { themes: "themes", demo: "themes", speed: "speed", features: "features", undo: "install", install: "install" };
+const SECS = ["themes", "try", "demo", "speed", "features", "undo", "install"].map(id => document.getElementById(id));
+const WS = { themes: "themes", try: "themes", demo: "themes", speed: "speed", features: "features", undo: "install", install: "install" };
 const dockItems = [...document.querySelectorAll(".di[data-sec]")];
 const barItems = [...document.querySelectorAll(".tb-ic[data-nav]")];
 const wsItems = [...document.querySelectorAll(".ws")];
@@ -1135,13 +1189,20 @@ if (document.documentElement.classList.contains("boot")) {
 
 /* ---------------- Phone dock: tucks away while reading down, back on the way up ---------------- */
 const dockEl = $("#dock"), phone = window.matchMedia("(max-width: 699px)");
+// Out of the way while the live dock is on screen too: one dock at a time.
+let readingDown = false, onTry = false;
+const tuck = () => dockEl.classList.toggle("tucked", readingDown || onTry);
+if ("IntersectionObserver" in window && $("#try-stage")) {
+  new IntersectionObserver(es => { onTry = es.some(e => e.isIntersecting); tuck(); }, { rootMargin: "-10% 0px -10% 0px" }).observe($("#try-stage"));
+}
 let lastY = window.scrollY;
 window.addEventListener("scroll", () => {
   const y = window.scrollY, dy = y - lastY;
   if (Math.abs(dy) < 6) return;
   lastY = y;
   const atEnd = window.innerHeight + y >= document.documentElement.scrollHeight - 40;
-  dockEl.classList.toggle("tucked", phone.matches && dy > 0 && y > 120 && !atEnd);
+  readingDown = phone.matches && dy > 0 && y > 120 && !atEnd;
+  tuck();
 }, { passive: true });
 dockEl.addEventListener("focusin", () => dockEl.classList.remove("tucked"));
 window.addEventListener("resize", () => { lastSec = ""; spy(); });
