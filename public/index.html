@@ -100,7 +100,7 @@ p{margin:0}
 .topbar{position:fixed;inset:0 0 auto 0;height:32px;z-index:50;background:rgba(10,15,13,.94);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 10px;font:500 13px/1 var(--mono);color:var(--fg);border-bottom:1px solid rgba(80,148,117,.14)}
 @supports (backdrop-filter:blur(8px)){.topbar{background:rgba(10,15,13,.82);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2)}}
 .ws-row{display:flex;gap:4px;align-items:center}
-.ws{display:grid;place-items:center;min-width:22px;height:20px;padding:0 6px;border-radius:5px;color:var(--dim);text-decoration:none;font-weight:500;font-variant-numeric:tabular-nums;transition:background-color .12s,color .12s}
+.ws{display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:5px;color:var(--dim);text-decoration:none;font-weight:500;font-variant-numeric:tabular-nums;transition:background-color .12s,color .12s}
 .ws:hover{color:var(--ink)}
 .ws.on{background:var(--accent);color:#0b1411;font-weight:700}
 .tb-mid{display:flex;align-items:center;gap:14px;justify-self:center;white-space:nowrap}
@@ -120,8 +120,8 @@ p{margin:0}
   .day,.temp{display:none}
   .tb-mid{gap:6px}
   .clock{padding:4px 4px}
-  .ws{min-width:18px;padding:0 4px}
-  .ws-row{gap:2px}
+  .ws{min-width:24px;padding:0 4px}
+  .ws-row{gap:0}
 }
 @media (max-width:360px){.ws-3,.ws-4{display:none}}
 
@@ -203,7 +203,7 @@ section{scroll-margin-top:48px}
 .video-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .rec{display:flex;align-items:center;gap:8px;color:var(--ink)}
 .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red)}
-.vbox{position:relative;aspect-ratio:1400/900;background:var(--bg-1) url("shots/osaka-jade-desktop.webp") center/cover no-repeat}
+.vbox{position:relative;aspect-ratio:1400/900;background:var(--bg-1) center/cover no-repeat}
 .vbox video{display:block;width:100%;height:100%;object-fit:cover;background:transparent}
 .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;padding:14px 20px;background:rgba(18,28,24,.9);border:1px solid var(--border);color:var(--ink);font:500 14px/1 var(--mono);cursor:pointer;box-shadow:0 16px 40px var(--shadow)}
 .play:hover{background:var(--row)}
@@ -304,7 +304,7 @@ section{scroll-margin-top:48px}
 .term-bar .x .ic{width:10px;height:10px}
 .term-body{padding:18px 18px 20px;font:400 14px/1.75 var(--mono);color:var(--fg);overflow-wrap:anywhere}
 .term-body .p{color:var(--accent-hi)}
-.term-body .c{color:var(--muted)}
+.term-body .c{color:#6f8577}
 .term-body .k{color:var(--green);font-weight:700}
 .term-body .y{color:var(--ink)}
 .line{display:block}
@@ -385,7 +385,7 @@ html.boot .dock{animation:boot-dock .46s cubic-bezier(.3,.7,.3,1) .62s backwards
 @keyframes boot-out{to{opacity:0;visibility:hidden}}
 @keyframes boot-mark{from{opacity:0;transform:scale(.8)}}
 @keyframes boot-load{from{transform:scaleX(0)}}
-@keyframes boot-desk{from{opacity:0;transform:scale(1.03)}}
+@keyframes boot-desk{from{transform:scale(1.03)}}
 @keyframes boot-bar{from{transform:translateY(-100%)}}
 @keyframes boot-dock{0%{transform:translate(-50%,150%)}62%{transform:translate(-50%,-9px)}82%{transform:translate(-50%,2px)}100%{transform:translate(-50%,0)}}
 @media (prefers-reduced-motion:reduce){html.boot #boot{display:none}}
@@ -448,9 +448,9 @@ html.boot .dock{animation:boot-dock .46s cubic-bezier(.3,.7,.3,1) .62s backwards
           <div class="edge e3" id="e3" aria-hidden="true"></div>
           <div class="edge e2" id="e2" aria-hidden="true"></div>
           <div class="edge e1" id="e1" aria-hidden="true"></div>
-          <img class="leave" id="leave" src="shots/osaka-jade-desktop.webp" width="1800" height="1157" alt="" aria-hidden="true" draggable="false">
+          <img class="leave" id="leave" src="shots/thumb/osaka-jade-desktop.webp" width="1800" height="1157" alt="" aria-hidden="true" draggable="false">
           <button class="card" id="deck-btn" type="button" aria-label="Show the next theme: Retro 82" aria-describedby="deck-hint" style="background-image:url(shots/thumb/osaka-jade-desktop.webp)">
-            <img id="deck-img" src="shots/osaka-jade-desktop.webp" width="1800" height="1157" alt="Jade Shell desktop in the Osaka Jade theme" draggable="false" fetchpriority="high" decoding="async">
+            <img id="deck-img" src="shots/mid/osaka-jade-desktop.webp" srcset="shots/mid/osaka-jade-desktop.webp 1400w, shots/osaka-jade-desktop.webp 1800w" sizes="(min-width: 1240px) 830px, (min-width: 980px) 64vw, calc(100vw - 32px)" width="1800" height="1157" alt="Jade Shell desktop in the Osaka Jade theme" draggable="false" fetchpriority="high" decoding="async">
           </button>
         </div>
         <div class="deck-foot">
@@ -492,10 +492,10 @@ html.boot .dock{animation:boot-dock .46s cubic-bezier(.3,.7,.3,1) .62s backwards
     <div class="surface video-frame">
       <div class="video-bar"><span class="rec">Recording</span><span>Fedora 44 · GNOME 50</span></div>
       <div class="vbox" id="vbox">
-        <video id="demo-video" muted playsinline loop preload="metadata" poster="video/demo-poster.webp" width="1400" height="900">
+        <video id="demo-video" muted playsinline loop preload="none" data-poster="video/demo-poster.webp" width="1400" height="900">
           <source src="video/demo.mp4" type="video/mp4">
         </video>
-        <button class="play" id="play-btn" type="button" aria-label="Play the demo video"><span class="ic" data-i="media-playback-start"></span><span id="play-lbl">Play demo</span></button>
+        <button class="play" id="play-btn" type="button" aria-label="Play demo video"><span class="ic" data-i="media-playback-start"></span><span id="play-lbl">Play demo</span></button>
       </div>
     </div>
   </section>
@@ -771,7 +771,8 @@ const SCREENS = [
 const N = THEMES.length;
 const $ = (s, r = document) => r.querySelector(s);
 const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-const full = (t, s) => `shots/${THEMES[t].id}-${SCREENS[s].id}.webp`;
+let size = "mid/";  // shots/mid: 960px; "" for the 1800px ones on large or dense screens
+const full = (t, s) => `shots/${size}${THEMES[t].id}-${SCREENS[s].id}.webp`;
 const thumb = (t, s) => `shots/thumb/${THEMES[t].id}-${SCREENS[s].id}.webp`;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -781,6 +782,10 @@ let scr = 0, wantScr = 0;
 let seq = 0;
 let interacted = false;
 const card = $("#deck-btn"), img = $("#deck-img"), leave = $("#leave");
+// 960px is plenty up to ~1400 device pixels (a phone at 3x included).
+const pickSize = () => { if (card.getBoundingClientRect().width * (window.devicePixelRatio || 1) > 1400) size = ""; };
+pickSize();
+window.addEventListener("resize", pickSize, { passive: true });  // only ever grows
 const edges = [$("#e1"), $("#e2"), $("#e3")];
 const touchy = window.matchMedia("(hover: none)").matches;
 if (touchy) $("#deck-hint .verb").textContent = "Tap";
@@ -889,9 +894,10 @@ async function show(t, s, dir) {
   const token = ++seq;
   const src = await ready(t, s);
   if (token !== seq || !src) return false;
-  const old = img.getAttribute("src");
+  const old = img.currentSrc || img.getAttribute("src");
   if (dir !== 0 && !reduce.matches) leave.src = old;
   card.style.backgroundImage = `url(${thumb(t, s)})`;
+  img.removeAttribute("srcset");  // the first image came from srcset; from here the slider picks
   img.src = src;
   cur = t; scr = s;
   paintReadout();
@@ -1003,8 +1009,9 @@ const chips = THEMES.map((t, i) => {
 
 paintReadout();
 // first image: show thumb underneath; preload the next two once the page settles
-if (document.readyState === "complete") preloadNext(2);
-else window.addEventListener("load", () => preloadNext(2), { once: true });
+const later = fn => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 2500 }) : setTimeout(fn, 1200));
+if (document.readyState === "complete") later(() => preloadNext(2));
+else window.addEventListener("load", () => later(() => preloadNext(2)), { once: true });
 
 /* ---------------- Copy buttons ---------------- */
 const CMD = "curl -fsSL https://jadeshell.app/install | bash";
@@ -1027,19 +1034,29 @@ document.querySelectorAll("[data-copy]").forEach(btn => {
 /* ---------------- Demo video ---------------- */
 const vid = $("#demo-video"), vbox = $("#vbox"), playBtn = $("#play-btn"), playLbl = $("#play-lbl");
 let userPaused = false;
-function setPlaying(p) { vbox.classList.toggle("playing", p); playLbl.textContent = p ? "Pause" : "Play demo"; playBtn.setAttribute("aria-label", p ? "Pause the demo video" : "Play the demo video"); }
+function setPlaying(p) { vbox.classList.toggle("playing", p); playLbl.textContent = p ? "Pause" : "Play demo"; playBtn.setAttribute("aria-label", p ? "Pause demo video" : "Play demo video"); }
 vid.addEventListener("play", () => setPlaying(true));
 vid.addEventListener("pause", () => setPlaying(false));
+// The phone-sized recording where the video shows small; set once, before the first play.
+function pickVideo() {
+  if (vid.dataset.picked) return;
+  vid.dataset.picked = "1";
+  if (vbox.getBoundingClientRect().width * (window.devicePixelRatio || 1) <= 1100) vid.src = "video/demo-960.mp4";
+}
 playBtn.addEventListener("click", () => {
-  if (vid.paused) { userPaused = false; const p = vid.play(); if (p) p.catch(() => {}); }
+  if (vid.paused) { userPaused = false; pickVideo(); const p = vid.play(); if (p) p.catch(() => {}); }
   else { userPaused = true; vid.pause(); }
 });
 vid.addEventListener("click", () => playBtn.click());
+const dress = () => { if (!vid.poster) vid.poster = vid.dataset.poster; };
+if (!("IntersectionObserver" in window)) dress();
 if ("IntersectionObserver" in window) {
+  const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { dress(); near.disconnect(); } }, { rootMargin: "800px 0px" });
+  near.observe(vbox);
   new IntersectionObserver(es => {
     es.forEach(en => {
       if (reduce.matches) return;
-      if (en.isIntersecting && en.intersectionRatio > .5 && !userPaused) { const p = vid.play(); if (p) p.catch(() => {}); }
+      if (en.isIntersecting && en.intersectionRatio > .5 && !userPaused) { pickVideo(); const p = vid.play(); if (p) p.catch(() => {}); }
       else if (!en.isIntersecting || en.intersectionRatio < .2) { if (!vid.paused) vid.pause(); }
     });
   }, { threshold: [0, .2, .5, .8] }).observe(vbox);
