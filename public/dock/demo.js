@@ -95,7 +95,13 @@ export async function start(root, {meter, hint, chips, arrive = false} = {}) {
     const overlay = el('div', 'try-overlay');   // Jade Menu, app grid, dock menus
     const night = el('div', 'try-night', {'aria-hidden': 'true'});
     const lockEl = el('div', 'try-lock', {'aria-hidden': 'true'});
-    stage.append(...bgs, wsBar, spaces, canvas, glass, icons, label, menuLayer, barHits, overlay, night, lockEl);
+    // The clocks: the shots leave their text out, and the page draws it live
+    // where Jade Shell does, in its font and the theme's color.
+    const clockEl = el('div', 'try-clock', {'aria-hidden': 'true'});
+    const lockTime = el('div', 'try-clock', {'aria-hidden': 'true'});
+    const lockDate = el('div', 'try-clock', {'aria-hidden': 'true'});
+    lockEl.append(lockTime, lockDate);
+    stage.append(...bgs, wsBar, spaces, canvas, glass, icons, label, menuLayer, clockEl, barHits, overlay, night, lockEl);
 
     let W = 1400, scale = 1, dx = 0;  // dx: where the 1400-wide desktop starts (phones show its middle)
     let m;  // the dock's metrics
@@ -219,6 +225,7 @@ export async function start(root, {meter, hint, chips, arrive = false} = {}) {
                 placeWindow(win);
             }
             buildBar();
+            paintClocks();
             workspaces.forEach((space, k) => { space.style.transform = `translate3d(${(k - current) * W}px,0,0)`; });
         }
         scale = width / W;
@@ -245,7 +252,36 @@ export async function start(root, {meter, hint, chips, arrive = false} = {}) {
         bgs[bgFront].classList.remove('front');
         bgFront = back;
     }
+    function placeClock(node, style) {
+        node.hidden = !style;
+        if (!style)
+            return;
+        const [x, y, w, h] = style.box;
+        const size = style.absolute ? style.size : style.size * 4 / 3;  // points at 96 dpi
+        node.style.transform = `translate3d(${x + dx}px,${y}px,0)`;
+        node.style.width = `${w}px`;
+        node.style.height = `${h}px`;
+        node.style.font = `${style.style ? 'italic ' : ''}${style.weight} ${size}px/${h}px "JetBrains Mono",monospace`;
+        node.style.color = style.color;
+    }
+    function paintClocks() {
+        const clock = T().clock ?? {};
+        placeClock(clockEl, clock.bar);
+        placeClock(lockTime, clock.time);
+        placeClock(lockDate, clock.date);
+    }
+    function tick() {
+        const d = new Date();
+        const time = d.toLocaleTimeString(undefined, {hour: 'numeric', minute: '2-digit'});
+        clockEl.textContent = `${d.toLocaleDateString(undefined, {weekday: 'long'})} ${time}`;
+        lockTime.textContent = time;
+        lockDate.textContent = d.toLocaleDateString(undefined, {weekday: 'long', month: 'long', day: 'numeric'}).replace(',', '');
+        setTimeout(tick, 60_000 - (Date.now() % 60_000) + 50);  // on the minute
+    }
+    tick();
+
     function paintColors() {
+        paintClocks();
         const t = T();
         const light = t.mode === 'light';
         const s = stage.style;
