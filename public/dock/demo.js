@@ -336,9 +336,17 @@ export async function start(root, {meter, hint, chips, arrive = false} = {}) {
                 needs.push(asset(`win-${win.id}.webp`, id));
         if (openMenu)
             needs.push(asset(`m-${openMenu}.webp`, id), asset(`b-${openMenu}.webp`, id));
-        await Promise.all(needs.map(preload));
+        const arrived = await Promise.all(needs.map(preload));
         if (switching !== token)
             return;
+        // A picture that didn't come (a dropped connection): stay whole on
+        // the current theme rather than half-switched, and let a retry fetch it.
+        if (!arrived.every(Boolean)) {
+            needs.forEach((src, i) => arrived[i] || loaded.delete(src));
+            say(`${desk.themes[id].name} didn't load. Check your connection and try again.`);
+            chipsSync();
+            return;
+        }
         previousTheme = theme;
         theme = id;
         paintBackdrop(!reduce.matches);
