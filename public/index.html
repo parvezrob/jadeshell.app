@@ -439,7 +439,7 @@ html.boot .topbar{animation:boot-bar .3s cubic-bezier(.2,.9,.3,1) .56s backwards
     <h1>The GNOME you already have, <span class="nb">redrawn<span class="dot">.</span></span></h1>
     <p class="sub">Omarchy’s look and polish, on the GNOME you already run.<br class="wide"> One line to install, one to undo.</p>
     <div class="cmd">
-      <code id="cmd-hero"><span class="pr">$ </span>curl -fsSL <span class="nw">https://jadeshell.app/install | bash</span></code>
+      <code id="cmd-hero"><span class="pr">$ </span>wget -qO- <span class="nw">https://jadeshell.app/install | bash</span></code>
       <button class="copy" type="button" data-copy="cmd-hero">Copy</button>
     </div>
 
@@ -558,16 +558,16 @@ html.boot .topbar{animation:boot-bar .3s cubic-bezier(.2,.9,.3,1) .56s backwards
         <span class="line"><span class="p">~ › </span><span class="y">jade restore</span>      <span class="c"># your desktop from before Jade</span></span>
       </div>
     </div>
-    <div class="facts"><span>Saved before every change</span><span>Checked against SHA256SUMS</span><span>Updates with dnf or apt</span><span>Community themes can’t run code</span></div>
+    <div class="facts"><span>Saved before every change</span><span>Every download verified</span><span>Updates with dnf or apt</span><span>Community themes can’t run code</span></div>
   </section>
 
   <section class="sec wrap install" id="install" aria-labelledby="install-title">
     <h2 id="install-title">Your turn.</h2>
     <div class="cmd">
-      <code id="cmd-install"><span class="pr">$ </span>curl -fsSL <span class="nw">https://jadeshell.app/install | bash</span></code>
+      <code id="cmd-install"><span class="pr">$ </span>wget -qO- <span class="nw">https://jadeshell.app/install | bash</span></code>
       <button class="copy" type="button" data-copy="cmd-install">Copy</button>
     </div>
-    <p class="note">Fedora 44 or Ubuntu 26.04, GNOME 50. Run it as yourself, then log out and back in. Setup names any extension it turns off; <code>jade restore</code> turns them back on.</p>
+    <p class="note">Open the Terminal app, paste this line and press Enter. It asks for your password once, takes a minute or two, and offers to log you out at the end. Fedora 44 or Ubuntu 26.04.</p>
     <div class="links">
       <a href="https://github.com/parvezrob/jade-shell/blob/main/install.sh" target="_blank" rel="noopener">Read install.sh</a>
       <a href="https://github.com/parvezrob/jade-shell/releases/tag/v0.9.0" target="_blank" rel="noopener">Release notes</a>
@@ -610,7 +610,7 @@ document.querySelectorAll(".shot").forEach(b => b.addEventListener("click", () =
 }));
 
 /* ---------------- Copy buttons ---------------- */
-const CMD = "curl -fsSL https://jadeshell.app/install | bash";
+const CMD = "wget -qO- https://jadeshell.app/install | bash";
 document.querySelectorAll("[data-copy]").forEach(btn => {
   const label = btn.textContent;
   btn.addEventListener("click", () => {
